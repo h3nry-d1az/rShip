@@ -1,4 +1,6 @@
 use std::{process::Command, error::Error};
+use std::time::Duration;
+use std::thread::sleep;
 use rand::Rng;
 use device_query::Keycode;
 use rShip::{
@@ -22,22 +24,23 @@ fn main() -> Result<(), Box<dyn Error>> {
     hide_cursor();
     Command::new("cmd")
              .args(["/C", "title hShip, un juego de naves en caracteres ASCII"])
-             .output()
-             .expect("Falló en cambiar el título de la ventana");
+             .output()?;
 
     draw_limits();
 
-    goto_xy(58, 14); print!("HSHIP");
-	goto_xy(41, 15); print!("Pulsa cualquier tecla para iniciar el juego");
-	Command::new("cmd")
-             .args(["/C", "pause > nul"])
-             .output()
-             .expect("Falló en pausar el juego");
-	goto_xy(58, 14); print!("     ");
-	goto_xy(41, 15); print!("                                           ");
+    goto_xy(58, 14); println!("HSHIP");
+	goto_xy(41, 15); println!("Pulsa cualquier tecla para iniciar el juego");
+	'pause: loop {
+        match getch() {
+            Some(_) => break 'pause,
+            _ => continue 'pause
+        }
+    }
+	goto_xy(58, 14); println!("     ");
+	goto_xy(41, 15); println!("                                           ");
 
     while !game_over {
-        goto_xy(7, 1); print!("Puntos: {}", score);
+        goto_xy(7, 1); println!("Puntos: {}", score);
 
         if (score % 2000 == 0) && score != 0 {
 			if (score % 4000 == 0) && score != 0 {
@@ -56,14 +59,16 @@ fn main() -> Result<(), Box<dyn Error>> {
                 bullets.push(Bullet::new(player.get_x() + 2, player.get_y() - 1, 1));
             }
             else if key == Keycode::P {
-                goto_xy(58, 14); print!("HSHIP");
-                goto_xy(38, 15); print!("Pulsa cualquier tecla para continuar con el juego");
-                Command::new("cmd")
-                         .args(["/C", "pause > nul"])
-                         .output()
-                         .expect("Falló en pausar el juego");
-                goto_xy(58, 14); print!("     ");
-                goto_xy(38, 15); print!("                                                 ");
+                goto_xy(58, 14); println!("HSHIP");
+                goto_xy(38, 15); println!("Pulsa cualquier tecla para continuar con el juego");
+                'pause: loop {
+                    match getch() {
+                        Some(_) => break 'pause,
+                        _ => continue 'pause
+                    }
+                }
+                goto_xy(58, 14); println!("     ");
+                goto_xy(38, 15); println!("                                                 ");
             }
             else if key == Keycode::L &&
                     cfg!(debug_assertions) {
@@ -78,7 +83,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         for bullet in bullets.iter_mut() {
             bullet.tick();
             if bullet.is_out() {
-                goto_xy(bullet.get_x(), bullet.get_y()); print!(" ");
+                goto_xy(bullet.get_x(), bullet.get_y()); println!(" ");
 				drop(bullet)
             }
         }
@@ -99,7 +104,45 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
 
-        todo!("terminar de implementar");
+        for (aidx, acoord) in asteroids.clone()
+                                       .iter()
+                                       .map(|a| (a.get_x(), a.get_y()))
+                                       .enumerate() {
+            for (bidx, bcoord) in bullets.clone()
+                                         .iter()
+                                         .map(|b| (b.get_x(), b.get_y()))
+                                         .enumerate() {
+                if (acoord.0 == bcoord.0) && (acoord.1 <= bcoord.1) {
+                    goto_xy(bcoord.0, bcoord.1); println!(" ");
+                    bullets.remove(bidx);
+
+                    goto_xy(acoord.0, acoord.1); println!(" ");
+                    asteroids.remove(aidx);
+                    asteroids.push(Asteroid::new(rand::thread_rng().gen_range(2..117),
+                                                 rand::thread_rng().gen_range(4..7)));
+
+                    score += 100;
+                }
+            }
+        }
+
+        if player.get_lives() <= 0 {
+            game_over = true;
+        }
+
+        sleep(Duration::from_millis(30));
+    }
+
+    while game_over {
+        goto_xy(55, 14); println!("GAME OVER");
+		goto_xy(43, 15); println!("Pulsa ESPACIO para salir del juego");
+
+        if kbhit() {
+            match getch() {
+                Some(Keycode::Space) => break,
+                _ => continue
+            }
+        }
     }
 
     Ok(())

@@ -7,6 +7,7 @@ use crate::console::{
     io::{ kbhit, getch }
 };
 
+#[derive(Debug, Clone)]
 pub struct Ship {
     x: usize,
     y: usize,
@@ -41,24 +42,24 @@ impl Ship {
 
     pub fn draw(&self) {
         goto_xy(self.x, self.y);
-        print!("  {}", 65 as char);
+        println!("  {}", 65 as char);
 
         goto_xy(self.x, self.y+1);
-        print!(" {}{}{}", 40 as char, 207 as char, 41 as char);
+        println!(" {}{}{}", 40 as char, 207 as char, 41 as char);
 
         goto_xy(self.x, self.y+2);
-        print!("{}{} {}{}", 174 as char, 190 as char, 190 as char, 175 as char);
+        println!("{}{} {}{}", 174 as char, 190 as char, 190 as char, 175 as char);
     }
 
     pub fn clean(&self) {
         goto_xy(self.x, self.y);
-        print!("      ");
+        println!("      ");
 
         goto_xy(self.x, self.y+1);
-        print!("      ");
+        println!("      ");
 
         goto_xy(self.x, self.y+2);
-        print!("      ");
+        println!("      ");
     }
 
     pub fn tick(&mut self) {
@@ -76,32 +77,32 @@ impl Ship {
     }
 
     pub fn show_health(&self) {
-        goto_xy(70, 1); print!("Vidas: {}", self.lives);
-        goto_xy(90, 1); print!("Salud: ");
-        goto_xy(97, 1); print!("      ");
+        goto_xy(70, 1); println!("Vidas: {}", self.lives);
+        goto_xy(90, 1); println!("Salud: ");
+        goto_xy(97, 1); println!("      ");
         for i in 0..(self.health) {
-            goto_xy((97 + i) as usize, 1); print!("X");
+            goto_xy((97 + i) as usize, 1); println!("X");
         }
     }
 
     pub fn die(&mut self) {
         if self.health <= 0 {
             self.clean();
-            goto_xy(self.x, self.y);     print!("  **  ");
-		    goto_xy(self.x, self.y + 1); print!(" **** ");
-		    goto_xy(self.x, self.y + 2); print!("  **  ");
+            goto_xy(self.x, self.y);     println!("  **  ");
+		    goto_xy(self.x, self.y + 1); println!(" **** ");
+		    goto_xy(self.x, self.y + 2); println!("  **  ");
 		    sleep(Duration::from_millis(200));
 
             self.clean();
-            goto_xy(self.x, self.y);     print!("*  * *");
-		    goto_xy(self.x, self.y + 1); print!("* ****");
-		    goto_xy(self.x, self.y + 2); print!("* * **");
+            goto_xy(self.x, self.y);     println!("*  * *");
+		    goto_xy(self.x, self.y + 1); println!("* ****");
+		    goto_xy(self.x, self.y + 2); println!("* * **");
 		    sleep(Duration::from_millis(300));
 
             self.clean();
-            goto_xy(self.x, self.y);     print!("* ** *");
-		    goto_xy(self.x, self.y + 1); print!(" **** ");
-		    goto_xy(self.x, self.y + 2); print!("* ** *");
+            goto_xy(self.x, self.y);     println!("* ** *");
+		    goto_xy(self.x, self.y + 1); println!(" **** ");
+		    goto_xy(self.x, self.y + 2); println!("* ** *");
 		    sleep(Duration::from_millis(200));
             self.clean();
 

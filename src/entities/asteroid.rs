@@ -4,6 +4,7 @@ use rand::Rng;
 use crate::console::cursor::goto_xy;
 use crate::entities::ship::Ship;
 
+#[derive(Debug, Clone)]
 pub struct Asteroid {
     x: usize,
     y: usize,
@@ -22,12 +23,12 @@ impl Asteroid {
 
     pub fn draw(&self) {
         goto_xy(self.x, self.y);
-        print!("{}", 184 as char);
+        println!("{}", 184 as char);
     }
 
     pub fn clean(&self) {
         goto_xy(self.x, self.y);
-        print!(" ");
+        println!(" ");
     }
 
     pub fn tick(&mut self) {
