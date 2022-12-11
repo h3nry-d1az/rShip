@@ -36,7 +36,7 @@ impl Asteroid {
         self.y += 1;
 
 	    if self.y > 27 {
-		    self.x = rand::thread_rng().gen_range(3..116);
+		    self.x = rand::thread_rng().gen_range(5..116);
 		    self.y = 4;
         }
 

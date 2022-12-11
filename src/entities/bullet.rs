@@ -22,6 +22,6 @@ impl Bullet {
     }
 
     pub fn is_out(&self) -> bool {
-        self.y == 4
+        self.y <= 5
     }
 }

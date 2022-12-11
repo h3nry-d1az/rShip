@@ -61,6 +61,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             goto_xy(58, 14); println!("HSHIP");
             goto_xy(38, 15); println!("Pulsa cualquier tecla para continuar con el juego");
             'pause: loop {
+                sleep(Duration::from_millis(100));
                 match getch() {
                     Some(_) => break 'pause,
                     _ => continue 'pause
@@ -78,11 +79,17 @@ fn main() -> Result<(), Box<dyn Error>> {
             player.hit();
         }
 
-        for bullet in bullets.iter_mut() {
-            bullet.tick();
-            if bullet.is_out() {
-                goto_xy(bullet.get_x(), bullet.get_y()); println!(" ");
-				drop(bullet);
+        for bullet in bullets.clone()
+                             .iter()
+                             .enumerate()
+                             .map(|d| (d.1.get_x(), d.1.get_y(), d.1.is_out(), d.0)) {
+            match bullets.get_mut(bullet.3) {
+                Some(b) => b.tick(),
+                None => continue
+            }
+            if bullet.2 {
+                goto_xy(bullet.0, bullet.1 - 1); println!(" ");
+                bullets.remove(bullet.3);
             }
         }
 
@@ -116,7 +123,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                     goto_xy(acoord.0, acoord.1); println!(" ");
                     asteroids.remove(aidx);
-                    asteroids.push(Asteroid::new(rand::thread_rng().gen_range(2..117),
+                    asteroids.push(Asteroid::new(rand::thread_rng().gen_range(5..117),
                                                  rand::thread_rng().gen_range(4..7)));
 
                     score += 100;
