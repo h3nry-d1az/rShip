@@ -18,7 +18,7 @@ impl Bullet {
     pub fn tick(&mut self) {
         goto_xy(self.x, self.y); println!(" ");
 	    self.y -= self.velocity;
-        goto_xy(self.x, self.y); println!("{}", 186 as char);
+        goto_xy(self.x, self.y); println!("│");
     }
 
     pub fn is_out(&self) -> bool {

@@ -4,7 +4,7 @@ use std::cmp::{ max, min };
 use device_query::keymap::Keycode;
 use crate::console::{
     cursor::goto_xy,
-    io::{ kbhit, getch }
+    io::getch
 };
 
 #[derive(Debug, Clone)]
@@ -42,13 +42,13 @@ impl Ship {
 
     pub fn draw(&self) {
         goto_xy(self.x, self.y);
-        println!("  {}", 65 as char);
+        println!("  A");
 
         goto_xy(self.x, self.y+1);
-        println!(" {}{}{}", 40 as char, 207 as char, 41 as char);
+        println!(" (¤)");
 
         goto_xy(self.x, self.y+2);
-        println!("{}{} {}{}", 174 as char, 190 as char, 190 as char, 175 as char);
+        println!("«/ \\»");
     }
 
     pub fn clean(&self) {
@@ -63,14 +63,13 @@ impl Ship {
     }
 
     pub fn tick(&mut self) {
-        if !kbhit() { return; }
         self.clean();
         match getch() {
-            Some(Keycode::A) | Some(Keycode::Left)  => { if self.x > 3 { self.x = max(3, self.x-self.velocity);     } },
+            Some(Keycode::A) | Some(Keycode::Left)  => { if self.x > 3   { self.x = max(3, self.x-self.velocity);   } },
             Some(Keycode::D) | Some(Keycode::Right) => { if self.x < 111 { self.x = min(111, self.x+self.velocity); } },
-            Some(Keycode::W) | Some(Keycode::Up)    => { if self.y > 4 { self.y = max(4, self.y-self.velocity);     } },
-            Some(Keycode::S) | Some(Keycode::Down)  => { if self.y < 25 { self.y = min(25, self.y+self.velocity);   } },
-            _ => return
+            Some(Keycode::W) | Some(Keycode::Up)    => { if self.y > 4  { self.y = max(4, self.y-1);  } },
+            Some(Keycode::S) | Some(Keycode::Down)  => { if self.y < 25 { self.y = min(25, self.y+1); } },
+            _ => {}
         }
         self.draw();
         self.show_health();

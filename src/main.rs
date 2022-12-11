@@ -5,7 +5,7 @@ use rand::Rng;
 use device_query::Keycode;
 use rShip::{
     entities::{ship::Ship, asteroid::Asteroid, bullet::Bullet, draw_limits},
-    console::{cursor::{hide_cursor, goto_xy}, io::{kbhit, getch}}
+    console::{cursor::{hide_cursor, goto_xy}, io::getch}
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -51,40 +51,38 @@ fn main() -> Result<(), Box<dyn Error>> {
 			score += 100;
 		}
 
-        if kbhit() {
-            let key = getch().unwrap_or(Keycode::Tab);
-            if key == Keycode::Z ||
-               key == Keycode::Space ||
-               key == Keycode::Dot {
-                bullets.push(Bullet::new(player.get_x() + 2, player.get_y() - 1, 1));
-            }
-            else if key == Keycode::P {
-                goto_xy(58, 14); println!("HSHIP");
-                goto_xy(38, 15); println!("Pulsa cualquier tecla para continuar con el juego");
-                'pause: loop {
-                    match getch() {
-                        Some(_) => break 'pause,
-                        _ => continue 'pause
-                    }
+        let key = getch().unwrap_or(Keycode::Tab);
+        if key == Keycode::Z ||
+           key == Keycode::Space ||
+           key == Keycode::Dot {
+            bullets.push(Bullet::new(player.get_x() + 2, player.get_y() - 1, 1));
+        }
+        else if key == Keycode::P {
+            goto_xy(58, 14); println!("HSHIP");
+            goto_xy(38, 15); println!("Pulsa cualquier tecla para continuar con el juego");
+            'pause: loop {
+                match getch() {
+                    Some(_) => break 'pause,
+                    _ => continue 'pause
                 }
-                goto_xy(58, 14); println!("     ");
-                goto_xy(38, 15); println!("                                                 ");
             }
-            else if key == Keycode::L &&
-                    cfg!(debug_assertions) {
-                score += 100;
-            }
-            else if key == Keycode::E &&
-                    cfg!(debug_assertions) {
-                player.hit();
-            }
+            goto_xy(58, 14); println!("     ");
+            goto_xy(38, 15); println!("                                                 ");
+        }
+        else if key == Keycode::L &&
+                cfg!(debug_assertions) {
+            score += 100;
+        }
+        else if key == Keycode::E &&
+                cfg!(debug_assertions) {
+            player.hit();
         }
 
         for bullet in bullets.iter_mut() {
             bullet.tick();
             if bullet.is_out() {
                 goto_xy(bullet.get_x(), bullet.get_y()); println!(" ");
-				drop(bullet)
+				drop(bullet);
             }
         }
 
@@ -112,7 +110,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                                          .iter()
                                          .map(|b| (b.get_x(), b.get_y()))
                                          .enumerate() {
-                if (acoord.0 == bcoord.0) && (acoord.1 <= bcoord.1) {
+                if (acoord.0 == bcoord.0) && (acoord.1 == bcoord.1 || acoord.1 + 1 == bcoord.1) {
                     goto_xy(bcoord.0, bcoord.1); println!(" ");
                     bullets.remove(bidx);
 
@@ -137,11 +135,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         goto_xy(55, 14); println!("GAME OVER");
 		goto_xy(43, 15); println!("Pulsa ESPACIO para salir del juego");
 
-        if kbhit() {
-            match getch() {
-                Some(Keycode::Space) => break,
-                _ => continue
-            }
+        match getch() {
+            Some(Keycode::Space) => break,
+            _ => continue
         }
     }
 

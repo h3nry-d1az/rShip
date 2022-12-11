@@ -23,7 +23,7 @@ impl Asteroid {
 
     pub fn draw(&self) {
         goto_xy(self.x, self.y);
-        println!("{}", 184 as char);
+        println!("▓");
     }
 
     pub fn clean(&self) {
