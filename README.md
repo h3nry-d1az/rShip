@@ -24,4 +24,138 @@ This is, however, a small project that I carried out **quite some time ago**, so
 2. **Then compile it using cargo** *(if you don't have* **Rust** *installed go* [here](https://www.rust-lang.org/)*)* **using the command** `cargo build --release` if you want to build **just the binary** or **run** `cargo install --path .` to **install it**.
 
 #### Easiest method *(requires* [Rust installed](https://www.rust-lang.org/) *)*
-1. Just **run the command** `cargo install --git https://github.com/h3nry-d1az/rShip.git` and **wait for it to finish**.
+1. Just **run the command** `cargo install --git https://github.com/h3nry-d1az/rShip.git` and **wait for it to finish** *(* **Warning:** **hShip** *will be installed in this case under the name* **rShip** *)*.
+
+<hr>
+
+### Gameplay
+#### Instructions
+**hShip** is an **infinite spaceship game** in which you will have to **destroy asteroids** to increase your score, **preventing them from hitting you**.
+There are **three types of asteroids** that have **different properties**:
+<table>
+<thead>
+  <tr>
+    <td><b>Size</b></td>
+    <td><b>Health</b></td>
+    <td><b>Damage</b></td>
+    <td><b>Score</b></td>
+    <td><b>Shape</b></td>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><b>Small</b></td>
+    <td><b>One</b> shot</td>
+    <td><b>One</b> health point</td>
+    <td><b>100</b> points</td>
+    <td>▓</td>
+  </tr>
+  <tr>
+    <td><b>Medium</b></td>
+    <td><b>Three</b> shots</td>
+    <td><b>Two</b> health point</td>
+    <td><b>300</b> points</td>
+    <td>▒▒<br>▒▒</td>
+  </tr>
+  <tr>
+    <td><b>Huge</b></td>
+    <td><b>Five</b> shots</td>
+    <td>Instant kill</td>
+    <td><b>500</b> points</td>
+    <td>░░░<br>░░░</td>
+  </tr>
+</tbody>
+</table>
+
+Also, when you manage to collect **2000 points** you will get **an extra life**, and when you **reach 4000** a **new asteroid will appear**.
+
+#### Normal controls
+<table>
+<thead>
+  <tr>
+    <td><b>Key</b></td>
+    <td><b>Action</b></td>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><kbd>W</kbd> / <kbd>↑</kbd></td>
+    <td>Move the ship <b>up</b></td>
+  </tr>
+  <tr>
+    <td><kbd>A</kbd> / <kbd>←</kbd></td>
+    <td>Move the ship <b>left</b></td>
+  </tr>
+  <tr>
+    <td><kbd>S</kbd> / <kbd>↓</kbd></td>
+    <td>Move the ship <b>down</b></td>
+  </tr>
+  <tr>
+    <td><kbd>D</kbd> / <kbd>→</kbd></td>
+    <td>Move the ship <b>right</b></td>
+  </tr>
+  <tr>
+    <td><kbd>Z</kbd> / <kbd>⎵</kbd> / <kbd>.</kbd></td>
+    <td>Fire</td>
+  </tr>
+  <tr>
+    <td><kbd>P</kbd></td>
+    <td><b>Pause</b> the <b>game</b></td>
+  </tr>
+</tbody>
+</table>
+
+#### Debugging controls
+<table>
+<thead>
+  <tr>
+    <td><b>Key</b></td>
+    <td><b>Action</b></td>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><kbd>L</kbd></td>
+    <td>Add <b>100 points</b> to score</td>
+  </tr>
+  <tr>
+    <td><kbd>E</kbd></td>
+    <td><b>Reduce character's health</b> by <b>33%</b></td>
+  </tr>
+</tbody>
+</table>
+
+#### Some screenshots
+<div align="center">
+<img height="50%" width="50%" src="./assets/ss-1.png">
+
+<em>Title screen</em>
+
+<br>
+
+<img height="50%" width="50%" src="./assets/ss-2.png">
+
+<em>Start of the game</em>
+
+<br>
+
+<img height="50%" width="50%" src="./assets/ss-3.png">
+
+<em>Pause screen</em>
+
+<br>
+
+<img height="50%" width="50%" src="./assets/ss-4.png">
+
+<em>Regular game</em>
+
+<br>
+
+<img height="50%" width="50%" src="./assets/ss-5.png">
+
+<em>Game over screen</em>
+</div>
+
+<hr>
+
+I hope you enjoy it and if so, please **leave a positive review, give the project a star and share it**, it would help me a lot.
