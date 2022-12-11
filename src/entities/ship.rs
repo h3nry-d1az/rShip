@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use std::thread::sleep;
 use std::cmp::{ max, min };
 use device_query::keymap::Keycode;
@@ -6,6 +6,7 @@ use crate::console::{
     cursor::goto_xy,
     io::getch
 };
+use crate::entities::asteroid::Kind;
 
 #[derive(Debug, Clone)]
 pub struct Ship {
@@ -13,7 +14,8 @@ pub struct Ship {
     y: usize,
     health: u8,
     lives:  u8,
-    velocity: usize
+    velocity: usize,
+    timestamp: Instant
 }
 
 impl Ship {
@@ -29,7 +31,8 @@ impl Ship {
             y,
             health,
             lives,
-            velocity
+            velocity,
+            timestamp: Instant::now()
         }
     }
 
@@ -37,7 +40,13 @@ impl Ship {
     pub fn get_y(&self) -> usize { self.y }
     pub fn get_lives(&self) -> u8 { self.lives }
 
-    pub fn hit(&mut self)   { self.health -= 1; }
+    pub fn hit(&mut self, asteroid: Kind) {
+        match asteroid {
+            Kind::Small => { self.health = max(self.health as i8 - 1, 0) as u8; },
+            Kind::Medium => { self.health = max(self.health as i8 - 2, 0) as u8; },
+            Kind::Huge => { self.health = 0; }
+        }
+    }
     pub fn oneup(&mut self) { self.lives += 1; }
 
     pub fn draw(&self) {
@@ -76,12 +85,12 @@ impl Ship {
     }
 
     pub fn show_health(&self) {
-        goto_xy(70, 1); println!("Vidas: {}", self.lives);
-        goto_xy(90, 1); println!("Salud: ");
-        goto_xy(97, 1); println!("      ");
-        for i in 0..(self.health) {
-            goto_xy((97 + i) as usize, 1); println!("X");
+        goto_xy(64, 1); println!("                                                ");
+        goto_xy(64, 1); println!("L I V E S : ");
+        for i in 0..(self.lives) {
+            goto_xy((76 + 2*i) as usize, 1); println!("X");
         }
+        goto_xy(92, 1); println!("H E A L T H : {:.0}%",  self.health as f32 * 33.3);
     }
 
     pub fn die(&mut self) {
@@ -110,5 +119,14 @@ impl Ship {
 		    self.show_health();
 		    self.draw();
         }
+    }
+
+    pub fn shoot(&mut self) -> bool {
+        if self.timestamp.elapsed().as_millis() > 167 {
+            self.timestamp = Instant::now();
+            return true;
+        }
+
+        false
     }
 }

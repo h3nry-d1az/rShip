@@ -1,8 +1,8 @@
 use std::{process::Command, error::Error};
 use std::time::Duration;
 use std::thread::sleep;
-use rand::Rng;
 use device_query::Keycode;
+use rShip::entities::asteroid::Kind;
 use rShip::{
     entities::{ship::Ship, asteroid::Asteroid, bullet::Bullet, draw_limits},
     console::{cursor::{hide_cursor, goto_xy}, io::getch}
@@ -12,54 +12,75 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut game_over = false;
     let mut score: usize = 0;
 
-    let mut player = Ship::new(57, 25, 3, 4, 1);
+    let mut player = Ship::new(57, 25, 3, 4, 2);
     let mut asteroids: Vec<Asteroid> = Vec::new();
     let mut bullets: Vec<Bullet> = Vec::new();
 
-    for _ in 0..5 {
-        asteroids.push(Asteroid::new(rand::thread_rng().gen_range(2..117),
-                                     rand::thread_rng().gen_range(4..7)));
+    for _ in 0..6 {
+        asteroids.push(Asteroid::spawn());
     }
 
     hide_cursor();
     Command::new("cmd")
-             .args(["/C", "title hShip, un juego de naves en caracteres ASCII"])
+             .args(["/C", "title hShip, a small ship game made of ASCII characters"])
              .output()?;
 
     draw_limits();
 
-    goto_xy(58, 14); println!("HSHIP");
-	goto_xy(41, 15); println!("Pulsa cualquier tecla para iniciar el juego");
+    goto_xy(30, 11); println!("      :::    :::  ::::::::  :::    ::: ::::::::::: ::::::::: ");
+    goto_xy(30, 12); println!("     :+:    :+: :+:    :+: :+:    :+:     :+:     :+:    :+: ");
+    goto_xy(30, 13); println!("    +:+    +:+ +:+        +:+    +:+     +:+     +:+    +:+  ");
+    goto_xy(30, 14); println!("   +#++:++#++ +#++:++#++ +#++:++#++     +#+     +#++:++#+    ");
+    goto_xy(30, 15); println!("  +#+    +#+        +#+ +#+    +#+     +#+     +#+           ");
+    goto_xy(30, 16); println!(" #+#    #+# #+#    #+# #+#    #+#     #+#     #+#            ");
+    goto_xy(30, 17); println!("###    ###  ########  ###    ### ########### ###             ");
+
+
+	goto_xy(27, 20); println!("P R E S S   A N Y   K E Y   T O   S T A R T   T H E   G A M E");
 	'pause: loop {
         match getch() {
             Some(_) => break 'pause,
             _ => continue 'pause
         }
     }
-	goto_xy(58, 14); println!("     ");
-	goto_xy(41, 15); println!("                                           ");
+    goto_xy(30, 11); println!("                                                             ");
+    goto_xy(30, 12); println!("                                                             ");
+    goto_xy(30, 13); println!("                                                             ");
+    goto_xy(30, 14); println!("                                                             ");
+    goto_xy(30, 15); println!("                                                             ");
+    goto_xy(30, 16); println!("                                                             ");
+    goto_xy(30, 17); println!("                                                             ");
+
+
+	goto_xy(27, 20); println!("                                                             ");
 
     while !game_over {
-        goto_xy(7, 1); println!("Puntos: {}", score);
+        goto_xy(7, 1); println!("S C O R E : {}", score);
 
         if (score % 2000 == 0) && score != 0 {
 			if (score % 4000 == 0) && score != 0 {
-				asteroids.push(Asteroid::new(rand::thread_rng().gen_range(2..117),
-                                             rand::thread_rng().gen_range(4..7)));
+				asteroids.push(Asteroid::spawn());
 			}
 			player.oneup();
 			score += 100;
 		}
 
         let key = getch().unwrap_or(Keycode::Tab);
-        if key == Keycode::Z ||
-           key == Keycode::Space ||
-           key == Keycode::Dot {
+        if (key == Keycode::Z ||
+            key == Keycode::Space ||
+            key == Keycode::Dot) &&
+           player.shoot() {
             bullets.push(Bullet::new(player.get_x() + 2, player.get_y() - 1, 1));
         }
         else if key == Keycode::P {
-            goto_xy(58, 14); println!("HSHIP");
-            goto_xy(38, 15); println!("Pulsa cualquier tecla para continuar con el juego");
+            goto_xy(30, 11); println!("      :::    :::  ::::::::  :::    ::: ::::::::::: ::::::::: ");
+            goto_xy(30, 12); println!("     :+:    :+: :+:    :+: :+:    :+:     :+:     :+:    :+: ");
+            goto_xy(30, 13); println!("    +:+    +:+ +:+        +:+    +:+     +:+     +:+    +:+  ");
+            goto_xy(30, 14); println!("   +#++:++#++ +#++:++#++ +#++:++#++     +#+     +#++:++#+    ");
+            goto_xy(30, 15); println!("  +#+    +#+        +#+ +#+    +#+     +#+     +#+           ");
+            goto_xy(30, 16); println!(" #+#    #+# #+#    #+# #+#    #+#     #+#     #+#            ");
+            goto_xy(30, 17); println!("###    ###  ########  ###    ### ########### ###             ");
+            goto_xy(24, 20); println!("P R E S S   A N Y   K E Y   T O   C O N T I N U E   T H E   G A M E");
             'pause: loop {
                 sleep(Duration::from_millis(100));
                 match getch() {
@@ -67,8 +88,14 @@ fn main() -> Result<(), Box<dyn Error>> {
                     _ => continue 'pause
                 }
             }
-            goto_xy(58, 14); println!("     ");
-            goto_xy(38, 15); println!("                                                 ");
+            goto_xy(30, 11); println!("                                                             ");
+            goto_xy(30, 12); println!("                                                             ");
+            goto_xy(30, 13); println!("                                                             ");
+            goto_xy(30, 14); println!("                                                             ");
+            goto_xy(30, 15); println!("                                                             ");
+            goto_xy(30, 16); println!("                                                             ");
+            goto_xy(30, 17); println!("                                                             ");
+            goto_xy(24, 20); println!("                                                                   ");
         }
         else if key == Keycode::L &&
                 cfg!(debug_assertions) {
@@ -76,7 +103,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         else if key == Keycode::E &&
                 cfg!(debug_assertions) {
-            player.hit();
+            player.hit(Kind::Small);
         }
 
         for bullet in bullets.clone()
@@ -97,36 +124,48 @@ fn main() -> Result<(), Box<dyn Error>> {
         player.show_health();
         player.die();
 
-        for asteroid in asteroids.iter_mut() {
-            asteroid.tick();
-            if asteroid.collides(&player) {
-                player.hit();
+        for (idx, _) in asteroids.clone()
+                                 .iter_mut()
+                                 .enumerate() {
+            match asteroids.get(idx) {
+                Some(_) => {},
+                None => continue 
+            }
+            asteroids[idx].tick();
+            if asteroids[idx].collides(&player) {
+                asteroids[idx].clean();
+                player.hit(asteroids[idx].get_kind());
                 player.clean();
                 player.draw();
                 player.show_health();
-		        asteroid.set_x(rand::thread_rng().gen_range(3..116));
-                asteroid.set_y(4);
+		        asteroids.remove(idx);
+                asteroids.push(Asteroid::spawn());
             }
         }
 
-        for (aidx, acoord) in asteroids.clone()
+        for (aidx, asteroid) in asteroids.clone()
                                        .iter()
-                                       .map(|a| (a.get_x(), a.get_y()))
                                        .enumerate() {
-            for (bidx, bcoord) in bullets.clone()
+            for (bidx, bullet) in bullets.clone()
                                          .iter()
-                                         .map(|b| (b.get_x(), b.get_y()))
                                          .enumerate() {
-                if (acoord.0 == bcoord.0) && (acoord.1 == bcoord.1 || acoord.1 + 1 == bcoord.1) {
-                    goto_xy(bcoord.0, bcoord.1); println!(" ");
-                    bullets.remove(bidx);
+                if asteroid.gets_hit(&bullet) {
+                    goto_xy(bullet.get_x(), bullet.get_y()); println!(" ");
+                    if bidx < bullets.len() {
+                        bullets.remove(bidx);
+                    }
 
-                    goto_xy(acoord.0, acoord.1); println!(" ");
-                    asteroids.remove(aidx);
-                    asteroids.push(Asteroid::new(rand::thread_rng().gen_range(5..117),
-                                                 rand::thread_rng().gen_range(4..7)));
-
-                    score += 100;
+                    asteroids[aidx].hit();
+                    if asteroids[aidx].is_dead() {
+                        match asteroids[aidx].get_kind() {
+                            Kind::Small => { score += 100; },
+                            Kind::Medium => { score += 300; },
+                            Kind::Huge => { score += 500; }
+                        }
+                        asteroids[aidx].clean();
+                        asteroids.remove(aidx);
+                        asteroids.push(Asteroid::spawn());
+                    }
                 }
             }
         }
@@ -139,8 +178,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     while game_over {
-        goto_xy(55, 14); println!("GAME OVER");
-		goto_xy(43, 15); println!("Pulsa ESPACIO para salir del juego");
+        goto_xy(18, 11); println!("  ________    _____      _____  ___________ ____________   _________________________ ");
+        goto_xy(18, 12); println!(" /  _____/   /  _  \\    /     \\ \\_   _____/ \\_____  \\   \\ /   /\\_   _____/\\______   \\");
+        goto_xy(18, 13); println!("/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_   /   |   \\   Y   /  |    __)_  |       _/");
+        goto_xy(18, 14); println!("\\    \\_\\  \\/    |    \\/    Y    \\|        \\ /    |    \\     /   |        \\ |    |   \\");
+        goto_xy(18, 15); println!(" \\______  /\\____|__  /\\____|__  /_______  / \\_______  /\\___/   /_______  / |____|_  /");
+        goto_xy(18, 16); println!("        \\/         \\/         \\/        \\/          \\/                 \\/         \\/ ");
+        goto_xy(29, 19); println!("P R E S S   [S P A C E]   T O   Q U I T   T H E   G A M E");
 
         match getch() {
             Some(Keycode::Space) => break,
